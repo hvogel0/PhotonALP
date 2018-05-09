@@ -40,7 +40,6 @@ cv=cst.cv #speed of light
 pi=np.pi
 L=gp.L  #coherence length of magnetic field at z=0 in kpc
 dis=gp.dis  #extend of magnetic field at z=0in kpc
-ne0=gp.ne0  #electron density at z=0 in 1/cm**3
 z0=gp.z0    #first redshift for source galaxies
 zmax=gp.zmax    #Maximal redshift to which source galaxies are considered
 zstep=gp.zstep  #step size from z0 to zmax
@@ -49,7 +48,7 @@ T0=gp.T0        #initial photon fraction
 enList=para.enList  #Energy grid in TeV to compute propagation
 
 #Conversion factors
-SecInvTokpcInv=gp.SecInvTokpcInv #conversion of s-1 to kpc-1
+SecInvTokpcInv=cst.SecInvTokpcInv #conversion of s-1 to kpc-1
 
 #normalizations
 npl=cst.npl #plasma frequency normalization for ne in cm-3
@@ -58,24 +57,15 @@ nB=cst.nB   #Magnetic birefringence for B in muG
 nag=cst.nag #Mixing normalization for B in muG
 nGG=cst.nGG #Photon-photon dispersion normalization
 
-#Load absorption and dispersion functions
-GammaInt=gp.GammaInt
-
-DispInt=gp.DispInt
-
-
-# In[7]:
-
-def evo(zz):#Evolution model
-    return ((1+zz)**(-34)+((1+zz)/5160.64)**3+((1+zz)/9.06)**35)**(-1/10)
-
-def ne(zz):
-    return ne0*(1+zz)**(3-2.14)*evo(zz)**(1/1.4)
-
 #components of mixing matrix
-def dDispAndPl(en,zz):
-    enZ=en*(1+zz)
-    return npl/enZ*ne(zz)+enZ*nGG*DispInt(zz,np.log10(en))[0][0]
+def dDispAndPl(en,zz):#Dispersion due to plasma and photon-photon dispersion as a function of energy and redshift
+    enZ=en*(1.+zz)
+    return npl/enZ*gp.ne(zz)+enZ*nGG*gp.DispInt(np.log10(en),zz)[0][0]
+
+for en in enList:
+        print(en, dDispAndPl(en,0))
+
+sys.exit()
 
 
 # In[198]:
