@@ -1,0 +1,6 @@
+Contains files to read in global parameters for the calculation.
+
+I. Files
+--------------
+
+constants.py		Define physical constants and unit conversion factors
