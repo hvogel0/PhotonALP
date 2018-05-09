@@ -1,3 +1,4 @@
+#!/u/th/hvogel/.local/bin/python3.6
 #This file defines the parameters of the galaxies that emit the IceCube neutrinos and the corresponding photons
 
 """
@@ -9,6 +10,9 @@ z0	First redshift bin
 zmax 	Maximal redishift to which galaxies are considered
 zstep 	step size in arange(z0,zmax,zstep)
 """
+import numpy as np
+from scipy import interpolate
+
 #Constants
 L = 1 		#magnetic field's coherence length at z=0 in kpc
 dis = 7 	#size of galaxy at z=0 in kpc
@@ -20,20 +24,21 @@ zstep = 0.1	#step size in arange(z0,zmax,zstep)
 
 #Functions
 #Absorption:
-model="Gamma_Schober_normal_YukselGRB.dat" #change this to use a different absorption model, model: [Energy [eV], redshift, Gamma [s-1]]
-GammaDataRaw=np.loadtxt(model) #load data
+modelGamma="Gamma_Schober_normal_YukselGRB.dat" #change this to use a different absorption model, model: [Energy [eV], redshift, Gamma [s-1]]
+GammaDataRaw=np.loadtxt(modelGamma) #load data
 enLDataG=np.asarray(np.log10(sorted(list(set(GammaDataRaw[:,0])))))-12 #extract energy data. Convert to logarithmic form and to TeV
 zzDataG=np.asarray(sorted(list(set(GammaDataRaw[:,1])))) #redshift data
-GDataG=GammaDataRaw[:,2].reshape(len(enLDataG),101) 
-GammaInt=interpolate.RectBivariateSpline(enLDataG,zzDataG,GDataG,kx=1,ky=1)
+GDataG=GammaDataRaw[:,2].reshape(len(enLDataG),len(zzDataG)) #reshape Gamma
+GammaInt=interpolate.RectBivariateSpline(enLDataG,zzDataG, GDataG,kx=1,ky=1) #Interpolate with linear spline
 
 #load dispersion data
-DispDataRaw=np.loadtxt("norm_chi_Schober_normal_YukselGRB.dat")
-enLDataD=np.asarray(np.log10(sorted(list(set(DispDataRaw[:,0])))))-12
-#extract energy data. Convert to logarithmic form and to TeV
+modelChi = "norm_chi_Schober_normal_YukselGRB.dat2" #Change this to use a different photon-photon dispersion model
+DispDataRaw=np.loadtxt(modelChi) #load data
+enLDataD=np.asarray(np.log10(sorted(list(set(DispDataRaw[:,0])))))-12 #extract energy data. Convert to logarithmic form and to TeV
 #second entry redhift
-zzDataD=np.asarray(sorted(list(set(DispDataRaw[:,1]))))
-DDataD=DispDataRaw[:,2].reshape(50,1000)
-DispInt=interpolate.RectBivariateSpline(zzDataD,enLDataD,DDataD,kx=1,ky=1)
+zzDataD=np.asarray(sorted(list(set(DispDataRaw[:,1])))) #redshift data
+DDataD=DispDataRaw[:,2].reshape(len(enLDataD),len(zzDataD))
+DispInt=interpolate.RectBivariateSpline(enLDataD,zzDataD,DDataD,kx=1,ky=1) #Interpolate with linear spline
+
 
 

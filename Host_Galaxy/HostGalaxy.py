@@ -58,27 +58,10 @@ nB=cst.nB   #Magnetic birefringence for B in muG
 nag=cst.nag #Mixing normalization for B in muG
 nGG=cst.nGG #Photon-photon dispersion normalization
 
-#Function
-#load gamma data
-GammaDataRaw=np.loadtxt("Gamma_for_Schoberetal_normal_galaxies_redshift_with_YukselKistlerGRBEvolution.dat")
-enLDataG=np.asarray(np.log10(sorted(list(set(GammaDataRaw[:,0])))))-12
-#extract energy data. COnvert to logarithmic form and to TeV
-#second entry redhift
-zzDataG=np.asarray(sorted(list(set(GammaDataRaw[:,1]))))
-GDataG=GammaDataRaw[:,2].reshape(101,101)
-GammaInt=interpolate.RectBivariateSpline(enLDataG,zzDataG,GDataG,kx=1,ky=1)
+#Load absorption and dispersion functions
+GammaInt=gp.GammaInt
 
-
-# In[6]:
-
-#load dispersion data
-DispDataRaw=np.loadtxt("normalised_chiSchoberetalNormalGalaxiesRedshiftWithYukselKistlerGRBEvolution.dat")
-enLDataD=np.asarray(np.log10(sorted(list(set(DispDataRaw[:,0])))))-12
-#extract energy data. Convert to logarithmic form and to TeV
-#second entry redhift
-zzDataD=np.asarray(sorted(list(set(DispDataRaw[:,1]))))
-DDataD=DispDataRaw[:,2].reshape(50,1000)
-DispInt=interpolate.RectBivariateSpline(zzDataD,enLDataD,DDataD,kx=1,ky=1)
+DispInt=gp.DispInt
 
 
 # In[7]:
