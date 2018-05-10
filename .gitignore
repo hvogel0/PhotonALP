@@ -1,6 +1,7 @@
 Friedhof/
 Host_Galaxy/Data/*
 Host_Galaxy/Flux/*
+Host_Galaxy/__pycache__
 
 !Host_Galaxy/Data/.gitkeep
 !Host_Galaxy/Flux/.gitkeep

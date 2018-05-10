@@ -32,8 +32,8 @@ dis = 7 	#size of galaxy at z=0 in kpc
 ne0 = 3 	#electron number density at z=0 in cm-3
 T0 = 1		#initial photon fraction. The ALP fraction is  Ta = 1-T0
 z0 = 0.		#First redshift bin
+zmax = 6	#Maximal redishift to which galaxies are considered
 zstep = 0.1	#step size in arange(z0,zmax,zstep)
-zmax = 6+zstep	#Maximal redishift to which galaxies are considered
 B_var = 2./3.   #Variance of magnetic field model.
 
 #Functions
