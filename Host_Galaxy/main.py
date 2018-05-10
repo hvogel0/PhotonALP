@@ -26,14 +26,14 @@ if len(sys.argv)>4:
     sys.exit()
   
 #Read arguments
-mag = sys.argv[1] #magnetic field in muG
-gag = sys.argv[2] #coupling in 10^-11 GeV-1
-mass = sys.argv[3] #ALP mass in log_10(neV)
+magS = sys.argv[1] #magnetic field in muG
+gagS = sys.argv[2] #coupling in 10^-11 GeV-1
+massS = sys.argv[3] #ALP mass in log_10(neV)
 
 #Convert string parameters to float values
-mag=float(mag)
-gag=float(gag)
-mass=10**float(mass) #ALP mass in neV
+mag=float(magS)
+gag=float(gagS)
+mass=10**float(massS) #ALP mass in neV
 
 
 #Define constants
@@ -88,6 +88,6 @@ for omega in enList: # loop over energy bins
             print(omega, zzC)
         counter=counter+1
 
-np.savetxt('Data/dg_B'+str(mag)+'_g'+str(gag)+'_m'+str(mass)+'.dat',dg, fmt='%.4e')
-np.savetxt('Data/da_B'+str(mag)+'_g'+str(gag)+'_m'+str(mass)+'.dat',da, fmt='%.4e')
+np.savetxt('Data/dg_B'+magS+'_g'+gagS+'_m'+massS+'.dat',dg, fmt='%.4e')
+np.savetxt('Data/da_B'+magS+'_g'+gagS+'_m'+massS+'.dat',da, fmt='%.4e')
 

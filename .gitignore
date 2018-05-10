@@ -2,6 +2,9 @@ Friedhof/
 Host_Galaxy/Data/*
 Host_Galaxy/Flux/*
 Host_Galaxy/__pycache__
+Host_Galaxy/Galaxy_Models/__pycache__
+Parameters/__pycache__
+
 
 !Host_Galaxy/Data/.gitkeep
 !Host_Galaxy/Flux/.gitkeep

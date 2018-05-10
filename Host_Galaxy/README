@@ -2,5 +2,12 @@ Computation of axion flux from extragalactic sources.
 
 I. Files
 ------------------
+main.py		Main script that integrates photon-ALP system. Call with ./main.py B[muG] gag[10-11 GeV] mass[log10[neV]]
+evolution.py	Contains functions that are integrated by main.py
 
+II. Folder
+------------------
+Galaxy_Models	Contains files that determine the environment of the host galaxies
+Data		Contains results from main.py
+Flux		Contains fluxes that are created by flux.py
 
