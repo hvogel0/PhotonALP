@@ -1,0 +1,10 @@
+This file contains the galaxy models
+
+I. Files
+----------------
+
+Gamma_Schober_normal_YukselGRB.dat	Contains absorption data in format energy [eV], redshift, absorption [s-1]. Note that the redshift is fixed while energy is counting. This order has to be preserved in a new model. The model here is by Schober and using Yuksel GRB evolution.
+
+norm_chi_Schober_normal_YukselGRB.dat	Contains photon-photon dispersion data in format energy [eV], redshift, dispersion normalized to the CMB value 8.02*10**(-5) [kpc-1] (see Dobrynina et al. 1412.4777). Note that the redshift is fixed while energy is counting. This order has to be preserved in a new model. Th model here is by Schober and using Yuksel GRB evolution.
+
+galaxy_specs.py		Model of the host galaxy as a function of redshift. reads in Gamma_Schober_normal_YukselGRB.dat  and norm_chi_Schober_normal_YukselGRB.dat 
