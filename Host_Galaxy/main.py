@@ -44,7 +44,7 @@ dis=gp.dis  #extend of magnetic field at z=0in kpc
 z0=gp.z0    #first redshift for source galaxies
 zmax=gp.zmax    #Maximal redshift to which source galaxies are considered
 zstep=gp.zstep  #step size from z0 to zmax
-zzList = np.arange(z0,zmax,zstep)   #redhift grid considered for source galaxies
+zzList = np.arange(z0,zmax+zstep,zstep)   #redhift grid considered for source galaxies
 T0=gp.T0        #initial photon fraction
 enList=para.enList  #Energy grid in TeV to compute propagation
 B_var = gp.B_var    #Variance of magnetic field distribution.

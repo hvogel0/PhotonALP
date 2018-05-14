@@ -10,7 +10,7 @@ dis 	size of galaxy at z=0 in kpc
 ne0	electron number density at z=0 in cm-3
 T0	Initial photon fraction. The ALP fraction is Ta = 1 - T0
 z0	First redshift bin
-zmax 	Maximal redishift to which galaxies are considered
+zmax 	Maximal redshift to which galaxies are considered
 zstep 	step size in arange(z0,zmax,zstep)
 B_var   Variance of magnetic field. We assume here that the magnetic field components (B_x, B_y, B_z)\
         each follow a Gaussian distribution with zero mean and variance B_var
@@ -33,7 +33,7 @@ ne0 = 3 	#electron number density at z=0 in cm-3
 T0 = 1		#initial photon fraction. The ALP fraction is  Ta = 1-T0
 z0 = 0.		#First redshift bin
 zstep = 0.1	#step size in arange(z0,zmax,zstep)
-zmax = 6+zstep	#Maximal redishift to which galaxies are considered
+zmax = 6	#Maximal redishift to which galaxies are considered
 B_var = 2./3.   #Variance of magnetic field model.
 
 #Functions
