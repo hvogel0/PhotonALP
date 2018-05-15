@@ -10,6 +10,7 @@ from scipy.integrate import quad
 import sys
 sys.path.insert(0, '../Parameters/')
 sys.path.insert(0, 'Galaxy_Models/')
+import galaxy_specs as gp
 import constants as cst
 import cosmology as co
 #------------------
@@ -48,12 +49,13 @@ class ICFlux:
                 spectr = ((E*(1.+z)/self.Ebnu)**2+(E*(1.+z)/self.Ebnu)**(2*self.spec))**(-1./2.)
                 #broken neutrino spectrum from Kistler (eq. 1 1511.01530),with break energy Ebnu
                 dEpdE=(1.+z)#dEprime/dE
-                evoC=galaxy_model.evo(z)
+                evoC=galaxy_model.evo(galaxy_model,z)
                 cosmo=1./(co.H0*(1.+z)*np.sqrt(co.Omega_lambda+(1.+z)**3*co.Omega_M))#Cosmological evolution
                 return spectr*dEpdE*evoC*cosmo
+            self.Phi = Phi
+            self.normInt = normInt
 
-
-            self.normI, self.err =quad(normInt,0,galaxy_model.zmax,args=(self.Enorm,self,),limit=300, epsrel=10**(-4))#(E, Ebreak)
+            self.normI, self.err =quad(normInt,0,gp.zmax,args=(self.Enorm,self,),limit=300, epsrel=10**(-4))#(E, Ebreak)
             self.normC=4.*pi*Phi(self,self.Enorm)/cst.cv/self.normI #normalization constant
 
         if flux_model == 'Nieder':
@@ -68,18 +70,20 @@ class ICFlux:
                 spectr = ((E*(1.+z)/self.Ebnu)**2+(E*(1.+z)/self.Ebnu)**(2*self.spec))**(-1./2.)
                 #broken neutrino spectrum from Kistler (eq. 1 1511.01530),with break energy Ebnu
                 dEpdE=(1.+z)#dEprime/dE
-                evoC=galaxy_model.evo(z)
+                evoC=galaxy_model.evo(galaxy_model,z)
                 cosmo=1./(co.H0*(1.+z)*np.sqrt(co.Omega_lambda+(1.+z)**3*co.Omega_M))#Cosmological evolution
                 return spectr*dEpdE*evoC*cosmo
+            self.Phi = Phi
+            self.normInt = normInt
 
 
-            self.normI, self.err =quad(normInt,0,galaxy_model.zmax,args=(self.Enorm,self,),limit=300, epsrel=10**(-4))#(E, Ebreak)
+            self.normI, self.err =quad(normInt,0,gp.zmax,args=(self.Enorm,self,),limit=300, epsrel=10**(-4))#(E, Ebreak)
             self.normC=4.*pi*Phi(self,self.Enorm)/cst.cv/self.normI #normalization constant
 
-    def normIntPh(self,z,E):#same as normInt but with a break at 2*self.Ebnu. This holds for photons
+    def normIntPh(self,z,E,galaxy_model):#same as normInt but with a break at 2*self.Ebnu. This holds for photons
         spectr = ((E*(1.+z)/(2*self.Ebnu))**2+(E*(1.+z)/(2*self.Ebnu))**(2*self.spec))**(-1./2.)
         #broken neutrino spectrum from Kistler (eq. 1 1511.01530),with break energy Ebnu
         dEpdE=(1.+z) #dEprime/dE
-        evoC=galaxy_model.evo(z)
+        evoC=galaxy_model.evo(galaxy_model,z)
         cosmo=1./(co.H0*(1.+z)*np.sqrt(co.Omega_lambda+(1.+z)**3*co.Omega_M))#Cosmological evolution
         return spectr*dEpdE*evoC*cosmo

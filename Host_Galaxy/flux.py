@@ -60,10 +60,10 @@ if fm_name not in fm_options:
     print('Aborting...')
     sys.exit()
 
-flux = nm.ICFlux(fm_name,gm_name)    #make flux object
+flux = nm.ICFlux(fm_name,gm)    #make flux object
 
 #load ALP data
-daRaw=np.loadtxt('Data/da_B'+magS+'_g'+gagS+'_m'+massS+'_f'+fm_name'.dat')
+daRaw=np.loadtxt('Data/da_B'+magS+'_g'+gagS+'_m'+massS+'_r'+gm_name+'.dat')
 
 #interpolate data
 #Extract energy array
@@ -74,7 +74,7 @@ daDat=daRaw[:,2].reshape(len(enLDat),len(zzDat)) #reshape data array
 daInt=interpolate.RectBivariateSpline(enLDat,zzDat,daDat,kx=1,ky=1)#interpolate axion fraction da
 
 def flux_wgt(zz,Eg,flux_class):#Weighted flux from galaxy at redshift z as a function of redshift, photon energy Eg [GeV], and break energy
-    return flux_class.normIntPh(zz,Eg)*daInt(np.log10(Eg)-3,zz) #here the argument of daInt converts the energy in GeV to the log10 energy in TeV
+    return flux_class.normIntPh(zz,Eg,gm)*daInt(np.log10(Eg)-3,zz) #here the argument of daInt converts the energy in GeV to the log10 energy in TeV
 
 def flux_integrate(Eg,flux_class):#function that return total flux at the Milky Way as a function of redshift z=0 photon energy, Eg in [GeV]
     pref=1./3.*Eg**2*cst.cv/(4.*pi)*flux_class.normC #normalization and conversion to GeV cm-2 s-1 sr-1
