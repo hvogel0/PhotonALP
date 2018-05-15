@@ -26,16 +26,17 @@ import galaxy_specs as gp
 import constants as cst
 import cosmology as co
 import neutrino_model as nm
+import parameters as para
 #--------------------
 
 pi = np.pi
 
 #Check if the right amount of arguments are supplied. Exit if not. 
 #Arguments are #1 magnetic field strength in muG, photon-ALP coupling in 10^-11 GeV-1, ALP mass in log_10 (neV)
-if len(sys.argv)<5:
+if len(sys.argv)<4:
     print("Not enough arguments \n")
     sys.exit()
-if len(sys.argv)>5:
+if len(sys.argv)>4:
     print("Too many arguments \n")
     sys.exit()
 
@@ -43,18 +44,26 @@ if len(sys.argv)>5:
 magS = sys.argv[1]
 gagS = sys.argv[2]
 massS = sys.argv[3]
-fluxC = sys.argv[4]
 
-options = ['Kopper', 'Nieder']
+gm_name = para.galaxy_model # Name of galaxy model defined in parameters.py
+gm_options = gp.galaxy_options
+if gm_name not in gm_options:
+    print('Model not known. Please choose one of:\n', gm_options)
+    print('Aborting...')
+    sys.exit()
+gm = gp.galaxyModel(gm_name)
 
-if fluxC not in options:
-    print('Flux model unknown. Please choose Kopper or Nieder as suitable fluxes. Aborting...\n')
+fm_name = para.flux_model
+fm_options = nm.flux_options
+if fm_name not in fm_options:
+    print('Model not known. Please choose one of:\n', fm_options)
+    print('Aborting...')
     sys.exit()
 
-flux = nm.ICFlux(fluxC)    #make flux object
+flux = nm.ICFlux(fm_name,gm_name)    #make flux object
 
 #load ALP data
-daRaw=np.loadtxt('Data/da_B'+magS+'_g'+gagS+'_m'+massS+'.dat')
+daRaw=np.loadtxt('Data/da_B'+magS+'_g'+gagS+'_m'+massS+'_f'+fm_name'.dat')
 
 #interpolate data
 #Extract energy array
@@ -76,4 +85,4 @@ data =[]
 for EgL in enLDat:
     data.append([10**3*10**EgL,flux_integrate(10**3*10**EgL,flux)])#convert EgL energy, which is in TeV to GeV
     
-np.savetxt('Flux/ALPflux_B'+magS+'_g'+gagS+'_m'+massS+'_f'+fluxC+'.dat',data,fmt='%.4e')
+np.savetxt('Flux/ALPflux_B'+magS+'_g'+gagS+'_m'+massS+'_f'+fm_name+'_r'+gm_name+'.dat',data,fmt='%.4e')

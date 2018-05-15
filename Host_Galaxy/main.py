@@ -48,6 +48,14 @@ zzList = np.arange(z0,zmax+zstep,zstep)   #redhift grid considered for source ga
 T0=gp.T0        #initial photon fraction
 enList=para.enList  #Energy grid in TeV to compute propagation
 B_var = gp.B_var    #Variance of magnetic field distribution.
+gm_name = para.galaxy_model # Name of galaxy model defined in parameters.py
+gm_options = gp.galaxy_options
+if gm_name not in gm_options:
+    print('Model not known. Please choose one of:\n', gm_options)
+    print('Aborting...')
+    sys.exit()
+
+gm = gp.galaxyModel(gm_name)
 
 #Conversion factors
 SecInvTokpcInv=cst.SecInvTokpcInv #conversion of s-1 to kpc-1
@@ -69,9 +77,9 @@ d1=dis #destination
 counter=0
 for omega in enList: # loop over energy bins
     for zzC in zzList: #loop over redshift bins
-        Gamma=SecInvTokpcInv*gp.GammaInt(np.log10(omega),zzC)[0][0] #get Gamma and convert to kpc-1
-        Delta=evol.dDispAndPl(omega,zzC)
-        magC=gp.magZ(mag,zzC)
+        Gamma=SecInvTokpcInv*gm.GammaInt(np.log10(omega),zzC)[0][0] #get Gamma and convert to kpc-1
+        Delta=evol.dDispAndPl(omega,zzC,gm)
+        magC=gm.magZ(mag,zzC)
         avU11, err11 = quad(evol.fU11,0,np.inf,args=(omega,zzC,magC,gag,mass,Delta,Gamma,B_var,L,),limit=100)#averaging of U11
         avU22, err22 = quad(evol.fU22,0,np.inf,args=(omega,zzC,magC,gag,mass,Delta,Gamma,B_var,L,),limit=100)#averaging of U22
         avU33, err33 = quad(evol.fU33,0,np.inf,args=(omega,zzC,magC,gag,mass,Delta,Gamma,B_var,L,),limit=100)#averaging of U33
@@ -88,6 +96,6 @@ for omega in enList: # loop over energy bins
             print(omega, zzC)
         counter=counter+1
 
-np.savetxt('Data/dg_B'+magS+'_g'+gagS+'_m'+massS+'.dat',dg, fmt='%.4e')
-np.savetxt('Data/da_B'+magS+'_g'+gagS+'_m'+massS+'.dat',da, fmt='%.4e')
+np.savetxt('Data/dg_B'+magS+'_g'+gagS+'_m'+massS+'_r'+gm_name+'.dat',dg, fmt='%.4e')
+np.savetxt('Data/da_B'+magS+'_g'+gagS+'_m'+massS+'_r'+gm_name+'.dat',da, fmt='%.4e')
 

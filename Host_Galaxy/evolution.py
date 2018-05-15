@@ -8,7 +8,6 @@ import sys
 sys.path.insert(0, '../Parameters/')
 sys.path.insert(0, 'Galaxy_Models/')
 import constants as cst
-import galaxy_specs as gp
 #-------------------
 
 """
@@ -53,9 +52,9 @@ nag=cst.nag #Mixing normalization for B in muG
 nGG=cst.nGG #Photon-photon dispersion normalization
 
 #components of mixing matrix
-def dDispAndPl(en,zz):#Dispersion due to plasma and photon-photon dispersion as a function of energy and redshift
+def dDispAndPl(en,zz,gm):#Dispersion due to plasma and photon-photon dispersion as a function of energy and redshift, and a galaxy_model object
     enZ=en*(1.+zz)
-    return npl/enZ*gp.ne(zz)+enZ*nGG*gp.DispInt(np.log10(en),zz)[0][0]
+    return npl/enZ*gm.ne(zz)+enZ*nGG*gm.DispInt(np.log10(en),zz)[0][0]
 
 #functions to integrate
 def fU11(Br,en,zz,B,gag,mass,Delta,Gamma,B_var,L):#computes U_11

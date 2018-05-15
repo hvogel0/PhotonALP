@@ -15,3 +15,4 @@ Data		Contains results from main.py
 Flux		Contains fluxes that are created by flux.py
 Log		Folder for log files produced by main.py
 
+TODO: Implement Schober evolution model
