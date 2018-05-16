@@ -4,3 +4,4 @@ I. Files
 --------------
 
 constants.py		Define physical constants and unit conversion factors
+parameters.py		Defines parameters often changed by the user like energy bins and neutrino/galaxy models
