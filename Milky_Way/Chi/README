@@ -1,0 +1,8 @@
+The files in this directory contain the photon-photon dispersion with the following structure
+
+Energy [eV]\t	Distance [kpc]\t	\Delta_{\gamma\gamma} [kpc-1]
+
+The distance is chosen such that the dispersion is in the middle of the corresponding distance bin.
+A linear interpolation should give the correct result.
+
+The naming is such that the first number indicates the latitude and the second number indicates the longitude.

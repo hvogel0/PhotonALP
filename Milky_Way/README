@@ -1,0 +1,8 @@
+Propagation of photons and ALPs through the Milky Way
+
+I. Directories
+---------------------
+
+Chi		Photon-photon dispersion using the model by Vernetto
+Gamma		Absorption files following the model by Vernetto
+Data		Contains the data computed with the script

@@ -1,0 +1,7 @@
+Combination of several scripts that lead to computation of a chi-square at LHAASO or HAWC for an accumulation of extragalactic galaxies
+
+I. Folders
+-------------
+Host_Galaxy	Contains the script that generate the accumulated flux from extragalactic galaxies
+Milky_Way	Contains the scripts that propagate photons and ALPs through the Milky Way
+Parameters	User defined parameters like energy, flux and galaxy models

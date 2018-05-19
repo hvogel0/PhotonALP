@@ -5,9 +5,11 @@ Host_Galaxy/Flux/*
 Host_Galaxy/__pycache__
 Host_Galaxy/Galaxy_Models/__pycache__
 Parameters/__pycache__
+Milky_Way/Data/*
 
 
 !Host_Galaxy/Data/.gitkeep
 !Host_Galaxy/Log/.gitkeep
 !Host_Galaxy/Flux/.gitkeep
+!Milky_Way/Data/.gitkeep
 
