@@ -51,39 +51,18 @@ gagList = para.gagList
 npl=cst.npl
 na=cst.na
 nB=cst.nB
-nag=cs.nag
-nGG=cs.nGG
+nag=cst.nag
+nGG=cst.nGG
 
-#load absorption
-gamma_data=np.loadtxt("Gamma/gamma_"+bstring+"_"+lstring+".dat") #load data
-dist_dat=np.asarray([gamma_data[61*ii,1] for ii in range(0,int(len(gamma_data[:,1])/61))])
-eng_dat=np.log10(gamma_data[:61,0])
-gamma_dat=np.asarray((gamma_data[:,2]).reshape(len(dist_dat),len(eng_dat)))
-gamma_int=interpolate.RectBivariateSpline(dist_dat,eng_dat,gamma_dat,kx=1,ky=1)
+if para.mw_photon_model not in mw.mw_photon_options:
+    print('Milky Way photon model not known. Please use one of\n',mw.mw_photon_options, '\n aborting...')
+    sys.exit()
+mw_model = mw.MWModel(para.mw_photon_model,bstring,lstring) #instantiate Milky Way model
 
-def fgamma(t,omega):
-    if t<=0.5:
-        return gamma_int(0.5,np.log10(omega)+12)
-    return gamma_int(t,np.log10(omega)+12)
-
-
-# In[6]:
-
-#load delta_gamma_gamma
-dgg_data=np.loadtxt("Chi/chi_"+bstring+"_"+lstring+".dat")
-dist_datgg=np.asarray([dgg_data[61*ii,1] for ii in range(0,int(len(dgg_data[:,1])/61))])
-eng_datgg=np.log10(dgg_data[:61,0])
-dgg_dat=np.asarray((dgg_data[:,2]).reshape(len(dist_datgg),len(eng_datgg)))
-dgg_int=interpolate.RectBivariateSpline(dist_datgg,eng_datgg,dgg_dat,kx=1,ky=1)
-#dgg_int=interpolate.interp2d(np.log10(dgg_data[:,0]),dgg_data[:,1],dgg_data[:,2],kind='linear')
-
-def fdgg(t,omega):
-    if t<=0.5:
-        return dgg_int(0.5,np.log10(omega)+12)
-    return dgg_int(t,np.log10(omega)+12)
-
-
-# In[7]:
+if para.mw_mag_model not in mw.mw_mag_options:
+    print('Milky Way magnetic field model not known. Please use one of\n',mw.mw_mag_options, '\n aborting...')
+    sys.exit()
+mag_model = mw.magModel()
 
 iDeg=11.5
 rList=np.asarray([5.1,6.3,7.1,8.3,9.8,11.4,12.7,15.5])
