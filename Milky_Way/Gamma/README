@@ -1,4 +1,5 @@
-The files in this directory contain the photon-photon dispersion with the following structure
+These files follow the model by 1608.01587.
+The files in this directory contain the absorption with the following structure
 
 Energy [eV]\t	Distance [kpc]\t	\Gamma [kpc-1]
 

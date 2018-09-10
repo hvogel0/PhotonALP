@@ -6,3 +6,9 @@ I. Directories
 Chi		Photon-photon dispersion using the model by Vernetto
 Gamma		Absorption files following the model by Vernetto
 Data		Contains the data computed with the script
+
+II. Files
+---------------------
+
+main.py		Main file to start integration. Arguments are [latitude b in degrees (galactic coordinates), longitude l in degrees (galactic coordinates)]
+mw_model.py	Contains the details of the Milky Way models
