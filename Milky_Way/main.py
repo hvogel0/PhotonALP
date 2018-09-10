@@ -63,7 +63,7 @@ if mw_name not in mw_options:
     sys.exit()
 
 mwm = mw.mwModel(mw_name,bstring,lstring)
-
+sys.exit()
 #---STOP------
 def fdgg(t,omega):
     if t<=0.5:

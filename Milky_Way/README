@@ -12,3 +12,4 @@ II. Files
 
 main.py		Main file to start integration. Arguments are [latitude b in degrees (galactic coordinates), longitude l in degrees (galactic coordinates)]
 mw_model.py	Contains the details of the Milky Way models
+testing.py	Script to test implementation
