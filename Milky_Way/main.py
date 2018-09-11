@@ -55,51 +55,16 @@ nag=cst.nag
 nGG=cst.nGG
 
 #load Milky Way model
-mw_name = para.mw_model
-mw_options = mw.mw_options
-if mw_name not in mw_options:
-    print('Model not known. Please choose one of:\n', mw_options)
+mw_radiation_name = para.mw_radiation_model
+mw_radiation_options = mw.mw_radiation_options
+if mw_radiation_name not in mw_radiation_options:
+    print('Model not known. Please choose one of:\n', mw_radiation_options)
     print('Aborting...')
     sys.exit()
 
-mwm = mw.mwModel(mw_name,bstring,lstring)
-sys.exit()
-#---STOP------
-def fdgg(t,omega):
-    if t<=0.5:
-        return dgg_int(0.5,np.log10(omega)+12)
-    return dgg_int(t,np.log10(omega)+12)
+mwRadiation = mw.mwRadiationModel(mw_name,bstring,lstring)
 
-
-# In[7]:
-
-iDeg=11.5
-rList=np.asarray([5.1,6.3,7.1,8.3,9.8,11.4,12.7,15.5])
-bList=np.asarray([0.1,3.0,-0.9,-0.8,-2.0,-4.2,0,2.7])
-PhiList=np.asarray([-3*np.pi+2*ii*np.pi for ii in range(0,6)])
-
-def sortF(item):
-    return item[0]
-
-def fBDisc(rDisc,x,y):
-    if rDisc<3:
-        return np.asarray([0,0,0])
-    Phi=np.arctan2(y/rDisc,x/rDisc)
-    if Phi<0:
-        Phi=Phi+2*np.pi
-    if rDisc<=5:
-        Bring=0.1
-        return np.asarray([-Bring*np.sin(Phi),Bring*np.cos(Phi),0]);
-    if rDisc>20:
-        return np.asarray([0,0,0])
-    spiralList=[[rList[k]*np.exp((PhiList[j]+Phi)*np.tan(np.pi/180*iDeg)),int(k+1)] for j in range(0,len(PhiList))                for k in range(0,len(rList))]
-    spiralList.append([rDisc,0])
-    spiralList.sort(key=sortF)
-    for s in range(0,len(spiralList)):
-        if spiralList[s][1]==0:
-            ss=spiralList[s+1][1]-1
-    return 5*bList[ss]/rDisc*np.asarray([np.sin(iDeg*np.pi/180)*np.cos(Phi)-np.cos(iDeg*np.pi/180)*np.sin(Phi),                                         np.sin(iDeg*np.pi/180)*np.sin(Phi)+np.cos(iDeg*np.pi/180)*np.cos(Phi),0])
-
+#----STOP------
 def fBtor (rDisc,x,y,z):
     z0=5.3
     h=0.4
