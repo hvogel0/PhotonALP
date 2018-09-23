@@ -6,7 +6,7 @@ Host_Galaxy/__pycache__
 Host_Galaxy/Galaxy_Models/__pycache__
 Parameters/__pycache__
 Milky_Way/Data/*
-
+Milky_Way/__pycache__
 
 !Host_Galaxy/Data/.gitkeep
 !Host_Galaxy/Log/.gitkeep
