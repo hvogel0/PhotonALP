@@ -10,7 +10,7 @@ Data		Contains the data computed with the script
 II. Files
 ---------------------
 
-main.py			Main file to start integration. Arguments are [latitude b in degrees (galactic coordinates), longitude l in degrees (galactic coordinates)]
+main.py			Main file to start integration. Arguments are latitude b in degrees (galactic coordinates), longitude l in degrees (galactic coordinates), mode ('ALP' or 'None') which sets the initial condition to either [0,0,1] or [0,0,0], and source_flag ('True' or 'False') which activates photon production through CR-proton collisions.
 mw_parameters.py	Contains the details of the Milky Way models
 propagation.py		Contains the functions to propagate the photon-ALP system
 testing.py		Script to test implementation

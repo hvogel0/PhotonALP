@@ -11,7 +11,8 @@ cv	Speed of light in cm/s
 Conversions
 
 SecInvTokpcInv	conversion of s-1 to kpc-1
-
+pcTocm          conversion of parsec into cm
+cmTokpc         conversion of cm into kiloparsec
 
 Physics parameters
 
@@ -28,6 +29,8 @@ cv=2.998*10**(10) #speed of light in cm/s
 
 #Unit conversion
 SecInvTokpcInv = (3.0857*10**21)/cv #s-1 to kpc-1
+pcTocm = 3.0857*10**(18)
+cmTokpc = 1/pcTocm*10**(-3)
 
 #Physics parameters
 npl = -1.07*10**(-7)	#Normalization of plasma frequency for ne in cm-3

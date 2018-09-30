@@ -20,12 +20,17 @@ Classes
 mwRadiationModel    Defines the Milky Way's radiation model.. Its shape and spectrum determines\
                     the local absorption rate and the photon-photon dispersion
 mwMagneticModel     Defines the Milky Way's magnetic field model.
+mwCRModel             Defines the CR flux model. Here we implement the flux at earth and assume\
+                    a homogeneous and isotropic distribution over the MW
+mwDustModel         Defines the dust model and proton-proton cross sections.
 
 """
 
 ne = 1 #electron number density [cm-3]
 mw_radiation_options = ['VernettoLipari']
 mw_mf_options = ['JanssonFarrar','Pshirkov']
+mw_CR_options = ['Default']
+mw_dust_options = ['Misiriotis','Vernetto','Ahlers']
 
 class mwRadiationModel:
 
@@ -169,4 +174,72 @@ class mwMagneticField:
             print("Model not yet implemented. Aborting...")
             sys.exit()
 
+class mwCRModel:
+    def __init__(self,CRmodel):
+        if CRmodel == 'Default':
+            #Following the flux by Gaisser, Stanev and Tilav https://xxx.lanl.gov/abs/1303.3565
+            def H3AProtonFlux(ProtonEnergy): #Proton flux for ProtonEnergy in GeV
+                return 1/ProtonEnergy*(7860*(ProtonEnergy)**(-1.66)*np.exp(-ProtonEnergy/(4*10**6))+20*(ProtonEnergy)**(-1.4)*np.exp(-ProtonEnergy/(30*10**(6)))+1.7*(ProtonEnergy)**(-1.4)*np.exp(-ProtonEnergy/(2*10**(9))))
+            def H3AHeliumFlux(ProtonEnergy):#ProtonEnergy in GeV
+                return 1/ProtonEnergy*(3550*(4*ProtonEnergy)**(-1.58)*np.exp(-(4*ProtonEnergy)/(2*4*10**(6)))+20*(4*ProtonEnergy)**(-1.4)*np.exp(-(4*ProtonEnergy)/(2*30*10**(6)))+1.7*(4*ProtonEnergy)**(-1.4)*np.exp(-(4*ProtonEnergy)/(2*2*10**(9))))
+            def H3ACNOFlux(ProtonEnergy):#ProtonEnergy in GeV
+                return 1/ProtonEnergy*(2200*(14*ProtonEnergy)**(-1.63)*np.exp(-(14*ProtonEnergy)/(7*4*10**(6)))+13.4*(14*ProtonEnergy)**(-1.4)*np.exp(-(14*ProtonEnergy)/(7*30*10**(6)))+1.14*(14*ProtonEnergy)**(-1.4)*np.exp(-(14*ProtonEnergy)/(7*2*10**(9))))
+            def H3AMgSiFlux(ProtonEnergy):#ProtonEnergy in GeV
+                return 1/ProtonEnergy*(1430*(27*ProtonEnergy)**(-1.67)*np.exp(-(27*ProtonEnergy)/(13*4*10**(6)))+13.4*(27*ProtonEnergy)**(-1.4)*np.exp(-(27*ProtonEnergy)/(13*30*10**(6)))+1.14*(27*ProtonEnergy)**(-1.4)*np.exp(-(27*ProtonEnergy)/(13*2*10**(9))))
+            def H3AFeFlux(ProtonEnergy):#ProtonEnergy in GeV
+                return 1/ProtonEnergy*(2120*(56*ProtonEnergy)**(-1.63)*np.exp(-(56*ProtonEnergy)/(26*4*10**(6)))+13.4*(56*ProtonEnergy)**(-1.4)*np.exp(-(56*ProtonEnergy)/(26*30*10**(6)))+1.14*(56*ProtonEnergy)**(-1.4)*np.exp(-(56*ProtonEnergy)/(26*2*10**(9))))
+            self.H3AProtonFlux = H3AProtonFlux
+            self.H3AHeliumFlux = H3AHeliumFlux
+            self.H3ACNOFlux  = H3ACNOFlux
+            self.H3AMgSiFlux = H3AMgSiFlux
+            self.H3AFeFlux = H3AFeFlux
+
+
+            def H3AEquivalentAllProtonFlux(self,ProtonEnergy):#ProtonEnergy in GeV
+                return 1*self.H3AProtonFlux(ProtonEnergy)+4*self.H3AHeliumFlux(ProtonEnergy)+14*self.H3ACNOFlux(ProtonEnergy)+27*self.H3AMgSiFlux(ProtonEnergy)+56*self.H3AFeFlux(ProtonEnergy)
+        else:
+            print('Cosmic ray model not known')
+            print('Aborting...')
+            sys.exit()
+
+class mwDustModel:
+    def __init__(self,DustModel):
+        if DustModel == 'Misiriotis':
+
+            #Misiriotis paramters
+            self.rH2 = 2.57 #H2 r-scale length
+            self.zH2 = 0.08 #H2 z-scale length
+            self.rhoH2 = 2*4.06 #Proton density. H2 density times 2 because H2 has two protons.
+            self.rHI = 18.24
+            self.zHI = 0.52
+            self.rhoHI =  0.32
+            self.Rt = 2.75
+
+            def nH(rDisk,z):
+                if rDisk > Rt:
+                    return rhoH2*np.exp(-rDisk/rH2-abs(z)/zH2)+rhoHI*np.exp(-rDisk/rHI-abs(z)/zHI)
+                return rhoH2*np.exp(-rDisk/rH2-abs(z)/zH2)
+            self.nH = nH
+        else:
+            print('Dust model not known')
+            print('Aborting...')
+            sys.exit()
+
+    
+
+    #Functions for proton-proton interaction following arXiv:astro-ph/0606058:
+    def sigma (self,lE):#cross-section as a function of logarithmic energy [log[TeV]]
+        return (34.3+1.88*lE+0.25*lE**2)*10**(-27)#cm**2
+
+    def Bg(self,lE):#function of logarithmic energy [log[TeV]]
+        return 1.3+0.14*lE+0.011*lE**2
+
+    def Beta(self,lE):#function of logarithmic energy [log[TeV]]
+        return 1/(1.79+0.11*lE+0.008*lE**2)
+
+    def k(self,lE):#function of logarithmic energy [log[TeV]]
+        return 1/(0.801+0.049*lE+0.014*lE**2)
+
+    def F(self,x,lE):#function of x = Epi / Ep and logarithmic energy lE [log[TeV]]
+        return self.Bg(lE)*((-1+x**(self.Beta(lE)))**3*((-1+x**self.Beta(lE))*(-1+x**self.Beta(lE)*(-1+x**self.Beta(lE))*self.k(lE))-4*x**self.Beta(lE)*(1+(-1+x**self.Beta(lE))**2*self.k(lE))*np.log(x)*self.Beta(lE)))/(x*(-1+x**self.Beta(lE)*(-1+x**self.Beta(lE))*self.k(lE))**5)
 

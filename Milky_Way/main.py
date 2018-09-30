@@ -20,10 +20,10 @@ import propagation as prop
 
 #Check if the right amount of arguments are supplied. Exit if not. 
 #Arguments are #1 latitude in degrees and galactic coordinates, #2 longitude in degrees and galactic coodinates, #3 photon or ALP mode
-if len(sys.argv)<4:
+if len(sys.argv)<5:
     print("Not enough arguments \n")
     sys.exit()
-if len(sys.argv)>4:
+if len(sys.argv)>5:
     print("Too many arguments \n")
     sys.exit()
 
@@ -41,6 +41,13 @@ else:
     print('mode not known. Choose either None or ALP')
     print('Aborting...')
     sys.exit()
+
+source_flag = sys.argv[4]
+if (source_flag != 'True') and (source_flag != 'False'):
+    print('Absorption flag is neither True nor False')
+    print('Aborting...')
+    sys.exit()
+
 
 
 #create data files that we store the data in
@@ -73,37 +80,79 @@ if mw_magnetic_field_name not in mw.mw_mf_options:
     print('Aborting...')
     sys.exit()
 
+#load Cosmic Ray model and check if implemented
+if source_flag == 'True':
+    mw_CR_name = para.mw_CR_model
+    if mw_CR_name not in mw.mw_CR_options:
+        print('Cosmic ray model not known. Please choose one of:\n', mw.mw_CR_options)
+        print('Aborting...')
+        sys.exit()
+
+#load gas and dust model and check if implemented
+if source_flag == 'True':
+    mw_dust_name = para.mw_dust_model
+    if mw_dust_name not in mw.mw_dust_options:
+        print('Dust model not known. Please choose one of:\n', mw.mw_dust_options)
+        print('Aborting...')
+        sys.exit()
+
 mwRadiation = mw.mwRadiationModel(mw_radiation_name,bstring,lstring)
 mwMagField = mw.mwMagneticField(mw_magnetic_field_name)
+if source_flag == 'True':
+    mwCRModel = mw.mwCRModel(mw_CR_name)
+    mwDustModel = mw.mwDustModel(mw_dust_name)
+else:
+    mwCRModel = None
+    mwDustModel = None
 
+#Distance parameters
 d0=mwRadiation.dist_dat[len(mwRadiation.dist_dat)-1] # initial distance from earth
 d1 = 0 # position of Earth
 dd = 0.01 # length of step
-d0 = prop.find_initial(d0,dd,bb,ll,mwMagField)
- 
-#omegaList=np.logspace(0,4,num=41,endpoint=True)
+d0 = prop.find_initial(d0,dd,bb,ll,mwMagField,mwDustModel,mode)
 
-
-#dg=[] # initialize photon array
-#da=[] # initialize ALP array
+#Propagation and solution of ODE
 counter =0
 # put mode option if initial condition 0
+
+def numericalSimplification(omega,gagC,maC,bb,ll,mwRadiation,mwMagField,warn):
+    if mode=='ALP' and source_flag == 'False':
+        ytry=prop.H(0,omega,gagC,maC,bb,ll,mwRadiation,mwMagField).real # to check if conversion around earth is small
+        return 900*1.52*10**(-2)*gagC<(ytry[0,0]+ytry[1,1]-ytry[2,2])
+    if mode=='None' and source_flag == 'True':
+        ytry=prop.H(0,omega,gagC,maC,bb,ll,mwRadiation,mwMagField) # to check if conversion around earth is small
+        return np.sqrt(2)*10*1.52*10**(-2)*gag<np.sqrt((abs(ytry[0,0]+ytry[1,1]-ytry[2,2])))
+    if warn == True:
+        print('WARNING: numerical simplification not implemented. This numerical method needs refinement in some parameter regions')
+        print(mode)
+        print(source_flag)
+        sys.exit()
+    return False
+
+warn = True
 for gagC in gagList:
     for maC in maList:
         dg=[]
         da=[]
         for omega in para.enList:
-            ytry=prop.H(0,omega,gagC,maC,bb,ll,mwRadiation,mwMagField).real # to check if conversion around earth is small
-            if 900*1.52*10**(-2)*gagC<(ytry[0,0]+ytry[1,1]-ytry[2,2]): # if conversion rate is small, do simplified integration
-                rg, err2=quad(prop.integratedH,d1,d0,args=(omega,gagC,maC,bb,ll,mwRadiation,mwMagField,),limit=100)
-                dg.append([omega, maC, gagC, rg])
-                da.append([omega, maC, gagC, 1])
+            if numericalSimplification(omega,gagC,maC,bb,ll,mwRadiation,mwMagField,warn): # if conversion rate is small, do simplified integration
+                warn = False
+                if mode=='ALP' and source_flag == 'False':
+                    rg, err2=quad(prop.integratedH,d1,d0,args=(omega,gagC,maC,bb,ll,mwRadiation,mwMagField,),limit=100)
+                    dg.append([omega, maC, gagC, 0,rg,-1])
+                    da.append([omega, maC, gagC, 0,1,-1])
+                if mode=='None' and source_flag == 'True':
+                    r = ode(falt, jac=None).set_integrator('lsoda', nsteps=10**5, rtol=10**(-4))
+                    r.set_initial_value(d1,d0).set_f_params(omega,bb,ll,mwCRModel,mwDustModel)
+                    r.integrate(d1)
+                    dg.append([omega, maC, gagC,1, (r.y.real)[0],10**3*omega*(r.y.real)[0]/(2*np.pi)**3/omega**3/10**(10)])
+                    da.append([omega, maC, gagC,1, 0,0])
             else:
                 r = ode(prop.fsep, jac=None).set_integrator('lsoda', nsteps=10**5, rtol=10**(-4))
-                r.set_initial_value(y0, d0).set_f_params(omega,gagC,maC,bb,ll,mwRadiation,mwMagField)
+                r.set_initial_value(y0, d0).set_f_params(omega,gagC,maC,bb,ll,mwRadiation,mwMagField,mwCRModel,mwDustModel,source_flag)
                 r.integrate(d1)
-                dg.append([omega, maC, gagC, ((r.y)[0]+(r.y)[1])])
-                da.append([omega, maC, gagC, (r.y)[2]])
+                dg.append([omega, maC, gagC, 1,((r.y)[0]+(r.y)[1]),10**3*omega*((r.y)[0]+(r.y)[1])/(2*np.pi)**3/omega**3/10**(10) if (source_flag == True)  else -1])
+                da.append([omega, maC, gagC, 1,(r.y)[2],  10**3*omega*((r.y)[2])/(2*np.pi)**3/omega**3/10**(10) if (source_flag == True) else -1])
             if counter % 100 ==0:
                  print(omega, maC, gagC, flush=True)
             else:
