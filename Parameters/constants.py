@@ -13,6 +13,8 @@ Conversions
 SecInvTokpcInv	conversion of s-1 to kpc-1
 pcTocm          conversion of parsec into cm
 cmTokpc         conversion of cm into kiloparsec
+kmsqTocmsq      conversion of km2 to cm2
+kmsqTomsq       converstion of km2 to m2
 
 Physics parameters
 
@@ -31,6 +33,8 @@ cv=2.998*10**(10) #speed of light in cm/s
 SecInvTokpcInv = (3.0857*10**21)/cv #s-1 to kpc-1
 pcTocm = 3.0857*10**(18)
 cmTokpc = 1/pcTocm*10**(-3)
+kmsqTocmsq=10**10
+kmsqTomsq=10**6
 
 #Physics parameters
 npl = -1.07*10**(-7)	#Normalization of plasma frequency for ne in cm-3

@@ -2,7 +2,7 @@ Computation of axion flux from extragalactic sources.
 
 I. Files
 ------------------
-main.py			Main script that integrates photon-ALP system. Call with ./main.py B[muG] gag[10-11 GeV] mass[log10[neV]]
+main.py			Main script that integrates photon-ALP system. Call with ./main.py B[muG] gag[10^-11 GeV] mass[log10[neV]]
 flux.py			Converts output of main.py into fluxes at the Milky Way. Call with ./flux.py B[muG] gag[10-11 GeV] mass[log10[neV]] flux_model . Here flux_model can either be Kopper or Nieder depending on the IceCube result one wants to match
 evolution.py		Contains functions that are integrated by main.py
 cosmology.py		Defines Cosmological parameters used by flux.py

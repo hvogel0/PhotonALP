@@ -44,15 +44,15 @@ else:
 
 source_flag = sys.argv[4]
 if (source_flag != 'True') and (source_flag != 'False'):
-    print('Absorption flag is neither True nor False')
+    print('Sourcen flag is neither True nor False')
     print('Aborting...')
     sys.exit()
 
 
 
 #create data files that we store the data in
-dgstring ='Data/dg_'+bstring+'_'+lstring+'.txt' #name of photon data
-dastring ='Data/da_'+bstring+'_'+lstring+'.txt' #name of ALP data
+dgstring ='Data/dg_'+bstring+'_'+lstring+'_'+mode+'_'+source_flag+'.txt' #name of photon data
+dastring ='Data/da_'+bstring+'_'+lstring+'_'+mode+'_'+source_flag+'.txt' #name of ALP data
 #Create files to write into
 fg = open('Data/dg_'+bstring+'_'+lstring+'.txt','wb')   #open photon file
 fa = open('Data/da_'+bstring+'_'+lstring+'.txt','wb')   #open ALP file
@@ -145,8 +145,8 @@ for gagC in gagList:
                     r = ode(falt, jac=None).set_integrator('lsoda', nsteps=10**5, rtol=10**(-4))
                     r.set_initial_value(d1,d0).set_f_params(omega,bb,ll,mwCRModel,mwDustModel)
                     r.integrate(d1)
-                    dg.append([omega, maC, gagC,1, (r.y.real)[0],10**3*omega*(r.y.real)[0]/(2*np.pi)**3/omega**3/10**(10)])
-                    da.append([omega, maC, gagC,1, 0,0])
+                    dg.append([omega, maC, gagC,0, (r.y.real)[0],10**3*omega*(r.y.real)[0]/(2*np.pi)**3/omega**3/10**(10)])
+                    da.append([omega, maC, gagC,0, 0,0])
             else:
                 r = ode(prop.fsep, jac=None).set_integrator('lsoda', nsteps=10**5, rtol=10**(-4))
                 r.set_initial_value(y0, d0).set_f_params(omega,gagC,maC,bb,ll,mwRadiation,mwMagField,mwCRModel,mwDustModel,source_flag)

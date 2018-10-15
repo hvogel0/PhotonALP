@@ -2,6 +2,7 @@ Combination of several scripts that lead to computation of a chi-square at LHAAS
 
 I. Folders
 -------------
-Host_Galaxy	Contains the script that generate the accumulated flux from extragalactic galaxies
+Host_Galaxy	Contains the script that generates the accumulated flux from extragalactic galaxies
 Milky_Way	Contains the scripts that propagate photons and ALPs through the Milky Way
 Parameters	User defined parameters like energy, flux and galaxy models
+Predictions	Contains the script that generates the statistical sensitivity to an ALP flux

@@ -1,0 +1,8 @@
+The main.py of this directory lets you compute a statistical prediction for gamma ray experiments using the ALP-fluxes from the Milky_Way subfolder
+
+I. Directories
+----------------------------
+
+II. Files
+----------------------------
+main.py			Main execution file.
